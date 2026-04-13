@@ -408,6 +408,7 @@ services:
       - ./datasets:/datasets:ro
     networks:
       - mongo-net
+    restart: "no"
 
   # -----------------------------------------------------------
   # MONGO EXPRESS – webové UI pro správu databáze

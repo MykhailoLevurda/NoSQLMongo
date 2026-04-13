@@ -1,7 +1,7 @@
 # Dočasné archivy a rozbalené složky
 *.zip
 archive*/
-datasets/
+/datasets/
 
 # Temp soubory
 *.tmp

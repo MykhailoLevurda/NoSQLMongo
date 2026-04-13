@@ -74,7 +74,9 @@ if [ ! -f "$INIT_FLAG" ]; then
   echo "[configsvr1] Inicializace dokončena."
 fi
 
-echo "[configsvr1] Čekám na ukončení mongod procesu..."
-# Přejít na foreground – sledovat mongod log
+echo "[configsvr1] Cluster bezi, sleduji mongod..."
 tail -f /var/log/mongodb/mongod.log &
-wait $(pgrep mongod)
+while pgrep -x mongod > /dev/null; do
+  sleep 10
+done
+echo "[configsvr1] Mongod ukoncen."

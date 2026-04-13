@@ -92,6 +92,9 @@ if [ ! -f "$INIT_FLAG" ]; then
   echo "[$HOST] Inicializace dokončena."
 fi
 
-echo "[$HOST] Shard běží, čekám na mongod..."
+echo "[$HOST] Shard bezi, sleduji mongod..."
 tail -f /var/log/mongodb/mongod.log &
-wait $(pgrep mongod)
+while pgrep -x mongod > /dev/null; do
+  sleep 10
+done
+echo "[$HOST] Mongod ukoncen."
