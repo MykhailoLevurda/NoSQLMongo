@@ -1,0 +1,19 @@
+# Dočasné archivy a rozbalené složky
+*.zip
+archive*/
+datasets/
+
+# Temp soubory
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# Python cache
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Dokumentace (není součástí repo - odevzdávána zvlášť)
+*.pdf
+*.docx

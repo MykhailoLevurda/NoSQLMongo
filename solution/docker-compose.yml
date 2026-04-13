@@ -1,0 +1,458 @@
+# =============================================================
+# MongoDB Sharded Cluster - Streaming DB
+# Architektura:
+#   - 1x Keyfile generátor (init, ukončí se)
+#   - 3x Config Server (configReplSet) – replikační sada
+#   - 3x Shard 1 (shard1ReplSet) – replikační sada
+#   - 3x Shard 2 (shard2ReplSet) – replikační sada
+#   - 3x Shard 3 (shard3ReplSet) – replikační sada
+#   - 1x Mongos router
+#   - 1x Init container (přidá shardy, vytvoří DB, naimportuje data)
+#   - 1x Mongo Express (webové UI)
+# =============================================================
+
+services:
+
+  # -----------------------------------------------------------
+  # KEYFILE INIT – vygeneruje sdílený keyfile pro interní auth
+  # -----------------------------------------------------------
+  keyfile-init:
+    image: mongo:8.0
+    container_name: keyfile-init
+    entrypoint: ["bash", "/scripts/init-keyfile.sh"]
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile
+    networks:
+      - mongo-net
+
+  # -----------------------------------------------------------
+  # CONFIG SERVERS – configReplSet (3 uzly)
+  # -----------------------------------------------------------
+  configsvr1:
+    image: mongo:8.0
+    container_name: configsvr1
+    hostname: configsvr1
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-configsvr1.sh"]
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - configsvr1-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27019", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 60s
+
+  configsvr2:
+    image: mongo:8.0
+    container_name: configsvr2
+    hostname: configsvr2
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-configsvr.sh"]
+    environment:
+      - MONGO_HOST=configsvr2
+      - MONGO_PORT=27019
+      - MONGO_ROLE=configsvr
+      - REPLICA_SET=configReplSet
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - configsvr2-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27019", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
+
+  configsvr3:
+    image: mongo:8.0
+    container_name: configsvr3
+    hostname: configsvr3
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-configsvr.sh"]
+    environment:
+      - MONGO_HOST=configsvr3
+      - MONGO_PORT=27019
+      - MONGO_ROLE=configsvr
+      - REPLICA_SET=configReplSet
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - configsvr3-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27019", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
+
+  # -----------------------------------------------------------
+  # SHARD 1 – shard1ReplSet (3 uzly, RF=3)
+  # -----------------------------------------------------------
+  shard1-1:
+    image: mongo:8.0
+    container_name: shard1-1
+    hostname: shard1-1
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-shard-primary.sh"]
+    environment:
+      - SHARD_REPLSET=shard1ReplSet
+      - SHARD_HOST=shard1-1
+      - SHARD_PEERS=shard1-1:27018,shard1-2:27018,shard1-3:27018
+      - MONGO_ADMIN_USER=${MONGO_ADMIN_USER:-admin}
+      - MONGO_ADMIN_PASS=${MONGO_ADMIN_PASS:-adminpassword}
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - shard1-1-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 60s
+
+  shard1-2:
+    image: mongo:8.0
+    container_name: shard1-2
+    hostname: shard1-2
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-configsvr.sh"]
+    environment:
+      - MONGO_HOST=shard1-2
+      - MONGO_PORT=27018
+      - MONGO_ROLE=shardsvr
+      - REPLICA_SET=shard1ReplSet
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - shard1-2-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
+
+  shard1-3:
+    image: mongo:8.0
+    container_name: shard1-3
+    hostname: shard1-3
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-configsvr.sh"]
+    environment:
+      - MONGO_HOST=shard1-3
+      - MONGO_PORT=27018
+      - MONGO_ROLE=shardsvr
+      - REPLICA_SET=shard1ReplSet
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - shard1-3-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
+
+  # -----------------------------------------------------------
+  # SHARD 2 – shard2ReplSet (3 uzly, RF=3)
+  # -----------------------------------------------------------
+  shard2-1:
+    image: mongo:8.0
+    container_name: shard2-1
+    hostname: shard2-1
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-shard-primary.sh"]
+    environment:
+      - SHARD_REPLSET=shard2ReplSet
+      - SHARD_HOST=shard2-1
+      - SHARD_PEERS=shard2-1:27018,shard2-2:27018,shard2-3:27018
+      - MONGO_ADMIN_USER=${MONGO_ADMIN_USER:-admin}
+      - MONGO_ADMIN_PASS=${MONGO_ADMIN_PASS:-adminpassword}
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - shard2-1-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 60s
+
+  shard2-2:
+    image: mongo:8.0
+    container_name: shard2-2
+    hostname: shard2-2
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-configsvr.sh"]
+    environment:
+      - MONGO_HOST=shard2-2
+      - MONGO_PORT=27018
+      - MONGO_ROLE=shardsvr
+      - REPLICA_SET=shard2ReplSet
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - shard2-2-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
+
+  shard2-3:
+    image: mongo:8.0
+    container_name: shard2-3
+    hostname: shard2-3
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-configsvr.sh"]
+    environment:
+      - MONGO_HOST=shard2-3
+      - MONGO_PORT=27018
+      - MONGO_ROLE=shardsvr
+      - REPLICA_SET=shard2ReplSet
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - shard2-3-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
+
+  # -----------------------------------------------------------
+  # SHARD 3 – shard3ReplSet (3 uzly, RF=3)
+  # -----------------------------------------------------------
+  shard3-1:
+    image: mongo:8.0
+    container_name: shard3-1
+    hostname: shard3-1
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-shard-primary.sh"]
+    environment:
+      - SHARD_REPLSET=shard3ReplSet
+      - SHARD_HOST=shard3-1
+      - SHARD_PEERS=shard3-1:27018,shard3-2:27018,shard3-3:27018
+      - MONGO_ADMIN_USER=${MONGO_ADMIN_USER:-admin}
+      - MONGO_ADMIN_PASS=${MONGO_ADMIN_PASS:-adminpassword}
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - shard3-1-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 60s
+
+  shard3-2:
+    image: mongo:8.0
+    container_name: shard3-2
+    hostname: shard3-2
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-configsvr.sh"]
+    environment:
+      - MONGO_HOST=shard3-2
+      - MONGO_PORT=27018
+      - MONGO_ROLE=shardsvr
+      - REPLICA_SET=shard3ReplSet
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - shard3-2-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
+
+  shard3-3:
+    image: mongo:8.0
+    container_name: shard3-3
+    hostname: shard3-3
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
+    entrypoint: ["bash", "/scripts/entrypoint-configsvr.sh"]
+    environment:
+      - MONGO_HOST=shard3-3
+      - MONGO_PORT=27018
+      - MONGO_ROLE=shardsvr
+      - REPLICA_SET=shard3ReplSet
+    volumes:
+      - ./scripts:/scripts:ro
+      - keyfile-vol:/keyfile:ro
+      - shard3-3-data:/data/db
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 30s
+
+  # -----------------------------------------------------------
+  # MONGOS ROUTER – vstupní bod pro klientské aplikace
+  # -----------------------------------------------------------
+  mongos:
+    image: mongo:8.0
+    container_name: mongos
+    hostname: mongos
+    depends_on:
+      configsvr1:
+        condition: service_healthy
+      configsvr2:
+        condition: service_healthy
+      configsvr3:
+        condition: service_healthy
+    entrypoint:
+      - mongos
+      - --configdb
+      - configReplSet/configsvr1:27019,configsvr2:27019,configsvr3:27019
+      - --keyFile
+      - /keyfile/mongo-keyfile
+      - --bind_ip_all
+      - --port
+      - "27017"
+    ports:
+      - "${MONGOS_PORT:-27017}:27017"
+    volumes:
+      - keyfile-vol:/keyfile:ro
+    networks:
+      - mongo-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27017", "--eval", "db.runCommand('ping').ok", "--quiet"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+
+  # -----------------------------------------------------------
+  # MONGOS INIT – přidá shardy, vytvoří DB, naimportuje data
+  # -----------------------------------------------------------
+  mongos-init:
+    image: mongo:8.0
+    container_name: mongos-init
+    depends_on:
+      mongos:
+        condition: service_healthy
+      shard1-1:
+        condition: service_healthy
+      shard2-1:
+        condition: service_healthy
+      shard3-1:
+        condition: service_healthy
+    entrypoint: ["bash", "/scripts/init-mongos.sh"]
+    environment:
+      - MONGO_ADMIN_USER=${MONGO_ADMIN_USER:-admin}
+      - MONGO_ADMIN_PASS=${MONGO_ADMIN_PASS:-adminpassword}
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./datasets:/datasets:ro
+    networks:
+      - mongo-net
+
+  # -----------------------------------------------------------
+  # MONGO EXPRESS – webové UI pro správu databáze
+  # -----------------------------------------------------------
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: mongo-express
+    depends_on:
+      mongos-init:
+        condition: service_completed_successfully
+    ports:
+      - "${MONGO_EXPRESS_PORT:-8081}:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongos
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ADMIN_USER:-admin}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ADMIN_PASS:-adminpassword}
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_ADMIN_USER:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_ADMIN_PASS:-adminpassword}
+      ME_CONFIG_MONGODB_URL: "mongodb://${MONGO_ADMIN_USER:-admin}:${MONGO_ADMIN_PASS:-adminpassword}@mongos:27017/?authSource=admin"
+    networks:
+      - mongo-net
+    restart: unless-stopped
+
+# =============================================================
+# SÍTĚ
+# =============================================================
+networks:
+  mongo-net:
+    driver: bridge
+
+# =============================================================
+# VOLUMES – persistentní úložiště pro každý uzel
+# =============================================================
+volumes:
+  keyfile-vol:
+  configsvr1-data:
+  configsvr2-data:
+  configsvr3-data:
+  shard1-1-data:
+  shard1-2-data:
+  shard1-3-data:
+  shard2-1-data:
+  shard2-2-data:
+  shard2-3-data:
+  shard3-1-data:
+  shard3-2-data:
+  shard3-3-data:
