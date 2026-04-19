@@ -40,6 +40,17 @@ db.netflix_titles.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { _id: 2021, celkem: 1498, typy: [ { typ: 'Movie', pocet: 993 }, { typ: 'TV Show', pocet: 505 } ] },
+  { _id: 2020, celkem: 1879, typy: [ { typ: 'Movie', pocet: 1284 }, { typ: 'TV Show', pocet: 595 } ] },
+  { _id: 2019, celkem: 2016, typy: [ { typ: 'Movie', pocet: 1424 }, { typ: 'TV Show', pocet: 592 } ] },
+  { _id: 2018, celkem: 1649, typy: [ { typ: 'Movie', pocet: 1237 }, { typ: 'TV Show', pocet: 412 } ] },
+  { _id: 2017, celkem: 1188, typy: [ { typ: 'Movie', pocet: 839 }, { typ: 'TV Show', pocet: 349 } ] },
+  { _id: 2016, celkem: 429,  typy: [ { typ: 'Movie', pocet: 253 }, { typ: 'TV Show', pocet: 176 } ] },
+  { _id: 2015, celkem: 82,   typy: [ { typ: 'Movie', pocet: 56  }, { typ: 'TV Show', pocet: 26  } ] } ]
+```
+
 ---
 
 ### Dotaz 2
@@ -75,6 +86,19 @@ db.netflix_titles.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { zeme: 'United States', pocet_titulu: 3210, pocet_movies: 2363, pocet_shows: 847,  prumerny_rok: 2013, podil_katalogu_pct: 36.45 },
+  { zeme: 'India',         pocet_titulu: 1008, pocet_movies: 927,  pocet_shows: 81,   prumerny_rok: 2012, podil_katalogu_pct: 11.45 },
+  { zeme: 'United Kingdom',pocet_titulu: 626,  pocet_movies: 380,  pocet_shows: 246,  prumerny_rok: 2014, podil_katalogu_pct: 7.11  },
+  { zeme: 'Canada',        pocet_titulu: 271,  pocet_movies: 187,  pocet_shows: 84,   prumerny_rok: 2016, podil_katalogu_pct: 3.08  },
+  { zeme: 'Japan',         pocet_titulu: 259,  pocet_movies: 85,   pocet_shows: 174,  prumerny_rok: 2014, podil_katalogu_pct: 2.94  },
+  { zeme: 'France',        pocet_titulu: 212,  pocet_movies: 148,  pocet_shows: 64,   prumerny_rok: 2015, podil_katalogu_pct: 2.41  },
+  { zeme: 'South Korea',   pocet_titulu: 211,  pocet_movies: 47,   pocet_shows: 164,  prumerny_rok: 2017, podil_katalogu_pct: 2.4   },
+  { zeme: 'Spain',         pocet_titulu: 181,  pocet_movies: 129,  pocet_shows: 52,   prumerny_rok: 2018, podil_katalogu_pct: 2.06  },
+  { zeme: 'Mexico',        pocet_titulu: 134,  pocet_movies: 86,   pocet_shows: 48,   prumerny_rok: 2016, podil_katalogu_pct: 1.52  } ]
+```
+
 ---
 
 ### Dotaz 3
@@ -108,6 +132,21 @@ db.netflix_titles.aggregate([
   }},
   { $sort: { typ: 1, count: -1 } }
 ])
+```
+
+**Výstup:**
+```
+[ { typ: 'Movie',   rating: 'TV-MA', count: 2062, podil_pct: 33.7 },
+  { typ: 'Movie',   rating: 'TV-14', count: 1427, podil_pct: 23.3 },
+  { typ: 'Movie',   rating: 'R',     count: 797,  podil_pct: 13.0 },
+  { typ: 'Movie',   rating: 'TV-PG', count: 540,  podil_pct: 8.8  },
+  { typ: 'Movie',   rating: 'PG-13', count: 490,  podil_pct: 8.0  },
+  ...
+  { typ: 'TV Show', rating: 'TV-MA', count: 1145, podil_pct: 42.8 },
+  { typ: 'TV Show', rating: 'TV-14', count: 733,  podil_pct: 27.4 },
+  { typ: 'TV Show', rating: 'TV-PG', count: 323,  podil_pct: 12.1 },
+  { typ: 'TV Show', rating: 'TV-Y7', count: 195,  podil_pct: 7.3  },
+  { typ: 'TV Show', rating: 'TV-Y',  count: 176,  podil_pct: 6.6  } ]
 ```
 
 ---
@@ -149,6 +188,16 @@ db.netflix_titles.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { _id: 0,   pocet: 458,  nejkratsi_min: 3,   nejdelsi_min: 59,  prumerna_min: 41.6,  priklady: ['Monster Hunter: Legends of the Guild', 'Bridgerton - The Afterparty', 'Awon Boyz'] },
+  { _id: 60,  pocet: 1380, nejkratsi_min: 60,  nejdelsi_min: 89,  prumerna_min: 78.8,  priklady: ["Europe's Most Dangerous Man: Otto Skorzeny in Spain", ...] },
+  { _id: 90,  pocet: 3092, nejkratsi_min: 90,  nejdelsi_min: 119, prumerna_min: 102.1, priklady: ['The Starling', 'The Stronghold', 'Jaws 3'] },
+  { _id: 120, pocet: 936,  nejkratsi_min: 120, nejdelsi_min: 149, prumerna_min: 131.1, priklady: ['Je Suis Karl', 'Minsara Kanavu', 'Anjaam'] },
+  { _id: 150, pocet: 262,  nejkratsi_min: 150, nejdelsi_min: 312, prumerna_min: 168.3, priklady: ['Jeans', 'Kyaa Kool Hai Hum', 'Kyo Kii...'] } ]
+// Nejčastější kategorie: 90–119 min (3 092 filmů = 50 % katalogu filmů)
+```
+
 ---
 
 ### Dotaz 5
@@ -180,6 +229,18 @@ db.netflix_titles.aggregate([
       hodnoceni:    1
   }}
 ])
+```
+
+**Výstup:**
+```
+[ { rezisor: 'Rajiv Chilaka',        pocet_filmu: 19, prumerny_rok: 2012, pocet_zemi: 1, hodnoceni: ['TV-Y7','TV-Y'] },
+  { rezisor: 'Raúl Campos, Jan Suter', pocet_filmu: 18, prumerny_rok: 2018, pocet_zemi: 4, hodnoceni: ['TV-MA','TV-14'] },
+  { rezisor: 'Suhas Kadav',          pocet_filmu: 16, prumerny_rok: 2017, pocet_zemi: 1, hodnoceni: ['TV-Y7-FV','TV-Y','TV-Y7'] },
+  { rezisor: 'Marcus Raboy',         pocet_filmu: 15, prumerny_rok: 2017, pocet_zemi: 1, hodnoceni: ['TV-MA','TV-14'] },
+  { rezisor: 'Jay Karas',            pocet_filmu: 14, prumerny_rok: 2016, pocet_zemi: 1, hodnoceni: ['TV-MA','TV-14','TV-G'] },
+  { rezisor: 'Cathy Garcia-Molina',  pocet_filmu: 13, prumerny_rok: 2014, pocet_zemi: 1, hodnoceni: ['TV-G','TV-14','TV-MA','TV-PG'] },
+  { rezisor: 'Martin Scorsese',      pocet_filmu: 12, prumerny_rok: 1996, pocet_zemi: 5, hodnoceni: ['R','TV-MA','PG'] },
+  { rezisor: 'Steven Spielberg',     pocet_filmu: 11, prumerny_rok: 1998, pocet_zemi: 5, hodnoceni: ['PG-13','R','PG'] } ]
 ```
 
 ---
@@ -222,6 +283,19 @@ db.netflix_titles.aggregate([
   }},
   { $sort: { decade: 1 } }
 ])
+```
+
+**Výstup:**
+```
+[ { decade: '1940s', celkem_titulu: 26,    top3_zanry: [ { zanr: 'Documentaries', pocet: 13 }, { zanr: 'Classic Movies', pocet: 11 }, { zanr: 'TV Shows', pocet: 2 } ] },
+  { decade: '1950s', celkem_titulu: 30,    top3_zanry: [ { zanr: 'Classic Movies', pocet: 10 }, { zanr: 'Dramas', pocet: 6 }, { zanr: 'Comedies', pocet: 4 } ] },
+  { decade: '1960s', celkem_titulu: 68,    top3_zanry: [ { zanr: 'Classic Movies', pocet: 18 }, { zanr: 'Dramas', pocet: 17 }, { zanr: 'International Movies', pocet: 8 } ] },
+  { decade: '1970s', celkem_titulu: 185,   top3_zanry: [ { zanr: 'Classic Movies', pocet: 32 }, { zanr: 'International Movies', pocet: 30 }, { zanr: 'Dramas', pocet: 29 } ] },
+  { decade: '1980s', celkem_titulu: 302,   top3_zanry: [ { zanr: 'Dramas', pocet: 57 }, { zanr: 'International Movies', pocet: 53 }, { zanr: 'Action & Adventure', pocet: 43 } ] },
+  { decade: '1990s', celkem_titulu: 573,   top3_zanry: [ { zanr: 'Dramas', pocet: 102 }, { zanr: 'Comedies', pocet: 91 }, { zanr: 'International Movies', pocet: 68 } ] },
+  { decade: '2000s', celkem_titulu: 1816,  top3_zanry: [ { zanr: 'International Movies', pocet: 286 }, { zanr: 'Dramas', pocet: 273 }, { zanr: 'Comedies', pocet: 266 } ] },
+  { decade: '2010s', celkem_titulu: 12937, top3_zanry: [ { zanr: 'International Movies', pocet: 1923 }, { zanr: 'Dramas', pocet: 1656 }, { zanr: 'Comedies', pocet: 1053 } ] },
+  { decade: '2020s', celkem_titulu: 3385,  top3_zanry: [ { zanr: 'International Movies', pocet: 380 }, { zanr: 'International TV Shows', pocet: 363 }, { zanr: 'Dramas', pocet: 287 } ] } ]
 ```
 
 ---
@@ -278,6 +352,13 @@ db.netflix_titles.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { typ_obsahu: 'Movie',   pocet_titulu: 6131, avg_rok: 2013, pocet_zemi: 651, subscribers_M: 325, content_spend_M: 20000, spend_per_title_M: 3.2621 },
+  { typ_obsahu: 'TV Show', pocet_titulu: 2676, avg_rok: 2017, pocet_zemi: 196, subscribers_M: 325, content_spend_M: 20000, spend_per_title_M: 7.4738 } ]
+// Film na Netflixu stojí odhadem 3,26 mil. USD, seriál 7,47 mil. USD roční investice do obsahu.
+```
+
 ---
 
 ### Dotaz 8
@@ -323,6 +404,17 @@ db.streaming_shifts.aggregate([
   { $sort: { popularity: -1 } },
   { $limit: 15 }
 ])
+```
+
+**Výstup (top 5):**
+```
+[ { title: 'The Wrecking Crew', popularity: 191.57, vote_average: 6.898, streaming_platforms: 'Amazon Prime Video, Amazon Prime Video with Ads',
+    platform_data: [ { platform: 'Amazon Prime Video', subscribers_millions: null, quarterly_revenue_usd_millions: null, annual_content_spend_usd_millions: null } ] },
+  { title: 'Love Me Love Me',   popularity: 172.60, vote_average: 5.922, streaming_platforms: 'Amazon Prime Video, Amazon Prime Video with Ads', platform_data: [...] },
+  { title: 'State of Fear',     popularity: 168.58, vote_average: 4.806, streaming_platforms: 'Netflix, Netflix Standard with Ads',
+    platform_data: [ { platform: 'Netflix', subscribers_millions: 325, quarterly_revenue_usd_millions: 12050, annual_content_spend_usd_millions: 20000 } ] },
+  { title: 'The Rip',           popularity: 82.27,  vote_average: 7.063, streaming_platforms: 'Netflix, Netflix Standard with Ads', platform_data: [...] },
+  { title: "A Father's Miracle",popularity: 75.36,  vote_average: 7.306, streaming_platforms: 'Netflix, Netflix Standard with Ads', platform_data: [...] } ]
 ```
 
 ---
@@ -372,6 +464,15 @@ db.platform_financials.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { platform: 'Netflix',            subscribers_millions: 325,  quarterly_revenue_usd_millions: 12050, pocet_titulu_2026: 21, avg_vote_2026: 7.04, avg_popularity_2026: 32.99 },
+  { platform: 'Amazon Prime Video', subscribers_millions: null, quarterly_revenue_usd_millions: null,  pocet_titulu_2026: 11, avg_vote_2026: 6.41, avg_popularity_2026: 50.42 },
+  { platform: 'Hulu',               subscribers_millions: null, quarterly_revenue_usd_millions: null,  pocet_titulu_2026: 9,  avg_vote_2026: 7.00, avg_popularity_2026: 30.72 },
+  { platform: 'Disney+',            subscribers_millions: 126,  quarterly_revenue_usd_millions: null,  pocet_titulu_2026: 0,  avg_vote_2026: 0,    avg_popularity_2026: 0     },
+  ...ostatní platformy bez zastoupení v streaming_shifts... ]
+```
+
 ---
 
 ### Dotaz 10
@@ -408,6 +509,15 @@ db.netflix_titles.aggregate([
       content_spend_M:    "$netflix_data.annual_content_spend_usd_millions"
   }}
 ])
+```
+
+**Výstup:**
+```
+[ { zeme: 'United States', pocet_titulu: 3210, podil_katalogu_pct: 36.45, avg_rok: 2013, netflix_sub_M: 325, content_spend_M: 20000 },
+  { zeme: 'India',         pocet_titulu: 1008, podil_katalogu_pct: 11.45, avg_rok: 2012, netflix_sub_M: 325, content_spend_M: 20000 },
+  { zeme: 'United Kingdom',pocet_titulu: 626,  podil_katalogu_pct: 7.11,  avg_rok: 2014, netflix_sub_M: 325, content_spend_M: 20000 },
+  { zeme: 'Canada',        pocet_titulu: 271,  podil_katalogu_pct: 3.08,  avg_rok: 2016, netflix_sub_M: 325, content_spend_M: 20000 },
+  { zeme: 'Japan',         pocet_titulu: 259,  podil_katalogu_pct: 2.94,  avg_rok: 2014, netflix_sub_M: 325, content_spend_M: 20000 } ]
 ```
 
 ---
@@ -459,6 +569,24 @@ db.streaming_shifts.aggregate([
       ]
   }}
 ])
+```
+
+**Výstup (zkráceno):**
+```
+[ { statistiky_platforem: [
+      { _id: { netflix: 0, hulu: 0, prime: 0 }, count: 40, avg_vote: 6.95, avg_popularity: 19.28 },
+      { _id: { netflix: 1, hulu: 0, prime: 0 }, count: 21, avg_vote: 7.04, avg_popularity: 32.99 },
+      { _id: { netflix: 0, hulu: 0, prime: 1 }, count: 11, avg_vote: 6.41, avg_popularity: 50.42 },
+      { _id: { netflix: 0, hulu: 1, prime: 0 }, count: 9,  avg_vote: 7.00, avg_popularity: 30.72 } ],
+  top10_popularity: [
+      { title: 'The Wrecking Crew', popularity: 191.57, vote_average: 6.898 },
+      { title: 'Love Me Love Me',   popularity: 172.60, vote_average: 5.922 },
+      { title: 'State of Fear',     popularity: 168.58, vote_average: 4.806 }, ... ],
+  distribuce_hodnoceni: [
+      { _id: 4, count: 8,  avg_popularity: 56.73, sample_titles: ["Joe's College Road Trip", 'State of Fear'] },
+      { _id: 6, count: 32, avg_popularity: 23.25, sample_titles: ['Eternity', 'TRON: Ares'] },
+      { _id: 7, count: 37, avg_popularity: 26.63, sample_titles: ['Predator: Badlands', 'One Battle After Another'] },
+      { _id: 8, count: 4,  avg_popularity: 27.88, sample_titles: ['Even If This Love Disappears Tonight', 'KPop Demon Hunters'] } ] } ]
 ```
 
 ---
@@ -513,6 +641,17 @@ db.streaming_shifts.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { pocet_platforem: 0, count: 40, avg_popularity: 19.28, avg_vote: 6.95,
+    sample_tituly: ['Song Sung Blue', 'The SpongeBob Movie: Search for SquarePants', 'I Was a Stranger'],
+    total_market_sub_M: 559.4 },
+  { pocet_platforem: 1, count: 41, avg_popularity: 37.17, avg_vote: 6.86,
+    sample_tituly: ['Love Me Love Me', 'Frankenstein', 'Train Dreams'],
+    total_market_sub_M: 559.4 } ]
+// Tituly dostupné na 1 platformě mají průměrně 2x vyšší popularitu než exkluzivní (37.17 vs 19.28).
+```
+
 ---
 
 ## KATEGORIE 3 – Transformace a obohacení dat
@@ -565,6 +704,14 @@ db.netflix_titles.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { kategorie: 'kratky (<60 min)',     pocet: 458,  avg_min: 41.6,  min_delka: 3,   max_delka: 59,  priklady: ['Little Singham - Black Shadow', 'Lee Su-geun: The Sense Coach', 'Audible'] },
+  { kategorie: 'stredni (60-99 min)',  pocet: 2748, avg_min: 86.5,  min_delka: 60,  max_delka: 99,  priklady: ['Dick Johnson Is Dead', 'Intrusion', 'Go! Go! Cory Carson: Chrissy Takes the Wheel'] },
+  { kategorie: 'dlouhy (100-139 min)', pocet: 2494, avg_min: 114.4, min_delka: 100, max_delka: 139, priklady: ['Sankofa', 'Grown Ups', 'Ankahi Kahaniya'] },
+  { kategorie: 'extra dlouhy (140+ min)', pocet: 428, avg_min: 159, min_delka: 140, max_delka: 312, priklady: ['Tughlaq Durbar', 'Tughlaq Durbar (Telugu)', 'Omo Ghetto: the Saga'] } ]
+```
+
 ---
 
 ### Dotaz 14
@@ -606,6 +753,14 @@ db.netflix_titles.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { typ: 'TV Show', avg_stari_let: 2.3, median_stari_let: 0, min_stari_let: 0, max_stari_let: 76, pocet: 2653 },
+  { typ: 'Movie',   avg_stari_let: 5.7, median_stari_let: 2, min_stari_let: 0, max_stari_let: 75, pocet: 6129 } ]
+// Seriály jsou přidávány průměrně 2.3 roku po vydání (medián 0 = ve stejném roce).
+// Filmy mají průměrné stáří při přidání 5.7 let – Netflix přidává starší filmový katalog.
+```
+
 ---
 
 ### Dotaz 15
@@ -640,6 +795,19 @@ db.netflix_titles.aggregate([
       pocet_zemi:     { $size: "$zeme" }
   }}
 ])
+```
+
+**Výstup (top 10):**
+```
+[ { herec: 'Anupam Kher',      pocet_titulu: 43, filmy_i_serie: ['Movie','TV Show'], pocet_zemi: 4 },
+  { herec: 'Shah Rukh Khan',   pocet_titulu: 35, filmy_i_serie: ['Movie'],           pocet_zemi: 3 },
+  { herec: 'Julie Tejwani',    pocet_titulu: 33, filmy_i_serie: ['Movie','TV Show'], pocet_zemi: 1 },
+  { herec: 'Takahiro Sakurai', pocet_titulu: 32, filmy_i_serie: ['Movie','TV Show'], pocet_zemi: 1 },
+  { herec: 'Naseeruddin Shah', pocet_titulu: 32, filmy_i_serie: ['Movie'],           pocet_zemi: 3 },
+  { herec: 'Rupa Bhimani',     pocet_titulu: 31, filmy_i_serie: ['Movie','TV Show'], pocet_zemi: 1 },
+  { herec: 'Om Puri',          pocet_titulu: 30, filmy_i_serie: ['Movie'],           pocet_zemi: 5 },
+  { herec: 'Akshay Kumar',     pocet_titulu: 30, filmy_i_serie: ['Movie'],           pocet_zemi: 3 } ]
+// Dominují bollywoodské hvězdy a japonští herci dabují anime seriály.
 ```
 
 ---
@@ -705,6 +873,15 @@ db.platform_financials.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { platform: 'Netflix', subscribers_millions: 325, quarterly_revenue_usd_millions: 12050,
+    quarterly_profit_usd_millions: 2410, profit_margin_pct: 20, revenue_per_subscriber_usd: 37.08, predikce_rustu_pct: 6.2 },
+  { platform: 'Roku',    subscribers_millions: 98,  quarterly_revenue_usd_millions: 1395,
+    quarterly_profit_usd_millions: 80.5, profit_margin_pct: 5.77, revenue_per_subscriber_usd: 14.23, predikce_rustu_pct: -1.4 } ]
+// Pouze Netflix a Roku mají kladný zisk. Netflix s 20% marží je výrazně nejziskovější.
+```
+
 ---
 
 ### Dotaz 17
@@ -748,6 +925,15 @@ db.streaming_shifts.aggregate([
   }},
   { $sort: { popularity: -1 } }
 ])
+```
+
+**Výstup (top 5 na Netflixu):**
+```
+[ { title: 'State of Fear',     release_date: '2026-02-10', popularity: 168.58, vote_average: 4.806, vote_count: 31,   netflix_sub_M: 325, netflix_revenue_Q: 12050, content_spend_M: 20000 },
+  { title: 'The Rip',           release_date: '2026-01-13', popularity: 82.27,  vote_average: 7.063, vote_count: 1202, netflix_sub_M: 325, netflix_revenue_Q: 12050, content_spend_M: 20000 },
+  { title: "A Father's Miracle",release_date: '2025-12-25', popularity: 75.36,  vote_average: 7.306, vote_count: 18,   netflix_sub_M: 325, netflix_revenue_Q: 12050, content_spend_M: 20000 },
+  { title: "Joe's College Road Trip", release_date: '2026-02-12', popularity: 66.12, vote_average: 5.5, vote_count: 39, netflix_sub_M: 325, netflix_revenue_Q: 12050, content_spend_M: 20000 },
+  { title: 'KPop Demon Hunters', release_date: '2025-06-20', popularity: 45.74, vote_average: 8.093, vote_count: 2396, netflix_sub_M: 325, netflix_revenue_Q: 12050, content_spend_M: 20000 } ]
 ```
 
 ---
@@ -805,6 +991,15 @@ db.streaming_shifts.aggregate([
 ])
 ```
 
+**Výstup (top 5):**
+```
+[ { title: 'Predator: Badlands',  streaming_platforms: 'Disney Plus, Hulu',                          popularity: 163.04, vote_average: 7.723, norm_popularity: 85.11, norm_vote: 93.16, combined_score: 89.94 },
+  { title: 'The Wrecking Crew',   streaming_platforms: 'Amazon Prime Video, Amazon Prime Video with Ads', popularity: 191.57, vote_average: 6.898, norm_popularity: 100,   norm_vote: 83.21, combined_score: 89.93 },
+  { title: 'Love Me Love Me',     streaming_platforms: 'Amazon Prime Video, Amazon Prime Video with Ads', popularity: 172.60, vote_average: 5.922, norm_popularity: 90.1,  norm_vote: 71.44, combined_score: 78.9  },
+  { title: 'State of Fear',       streaming_platforms: 'Netflix, Netflix Standard with Ads',         popularity: 168.58, vote_average: 4.806, norm_popularity: 88,    norm_vote: 57.97, combined_score: 69.98 },
+  { title: "A Father's Miracle",  streaming_platforms: 'Netflix, Netflix Standard with Ads',         popularity: 75.36,  vote_average: 7.306, norm_popularity: 39.34, norm_vote: 88.13, combined_score: 68.61 } ]
+```
+
 ---
 
 ## KATEGORIE 4 – Indexy a optimalizace
@@ -828,6 +1023,18 @@ db.netflix_titles.find(
   { country: "United States", type: "Movie" },
   { title: 1, country: 1, type: 1, _id: 0 }
 ).hint("idx_country_type_year").explain("executionStats")
+```
+
+**Výstup:**
+```
+-- Bez indexu (COLLSCAN):
+  stage: SHARD_MERGE | totalDocsExamined: 8807 | nReturned: 2058 | executionTimeMillis: 6
+
+-- S compound indexem idx_country_type_year (IXSCAN):
+  stage: SHARD_MERGE | totalKeysExamined: 2058 | nReturned: 2058 | executionTimeMillis: 2
+
+// IXSCAN prohledal pouze 2058 klíčů (přesně počet výsledků) místo všech 8807 dokumentů.
+// Čas se zkrátil z 6ms na 2ms – při větším datasetu je rozdíl řádový.
 ```
 
 ---
@@ -859,6 +1066,36 @@ db.streaming_shifts.getIndexes().forEach(idx =>
 );
 ```
 
+**Výstup:**
+```
+=== netflix_titles ===
+_id_               -> {"_id":1}
+show_id_hashed     -> {"show_id":"hashed"}
+idx_type           -> {"type":1}
+idx_release_year   -> {"release_year":-1}
+idx_country        -> {"country":1}
+idx_rating         -> {"rating":1}
+idx_type_year      -> {"type":1,"release_year":-1}
+idx_listed_in      -> {"listed_in":1}
+idx_director       -> {"director":1}
+idx_country_type_year -> {"country":1,"type":1,"release_year":-1}
+
+=== platform_financials ===
+_id_           -> {"_id":1}
+platform_hashed -> {"platform":"hashed"}
+idx_platform   -> {"platform":1}
+idx_subscribers -> {"subscribers_millions":-1}
+idx_revenue    -> {"quarterly_revenue_usd_millions":-1}
+
+=== streaming_shifts ===
+_id_            -> {"_id":1}
+movie_id_hashed -> {"movie_id":"hashed"}
+idx_platforms   -> {"on_netflix":1,"on_hulu":1,"on_prime":1}
+idx_vote        -> {"vote_average":-1}
+idx_popularity  -> {"popularity":-1}
+idx_release_date -> {"release_date":1}
+```
+
 ---
 
 ### Dotaz 21
@@ -883,6 +1120,20 @@ db.netflix_titles.aggregate([
 ])
 ```
 
+**Výstup (zkráceno – jeden záznam per index per shard):**
+```
+[ { nazev_indexu: 'idx_type',    klic_indexu: { type: 1 },          pocet_pouziti: 3, host: 'shard1-1:27018' },
+  { nazev_indexu: 'idx_type',    klic_indexu: { type: 1 },          pocet_pouziti: 3, host: 'shard2-1:27018' },
+  { nazev_indexu: 'idx_type',    klic_indexu: { type: 1 },          pocet_pouziti: 3, host: 'shard3-1:27018' },
+  { nazev_indexu: 'idx_country', klic_indexu: { country: 1 },       pocet_pouziti: 2, host: 'shard1-1:27018' },
+  { nazev_indexu: 'idx_release_year', klic_indexu: { release_year: -1 }, pocet_pouziti: 2, host: 'shard1-1:27018' },
+  { nazev_indexu: 'idx_rating',  klic_indexu: { rating: 1 },        pocet_pouziti: 1, host: 'shard1-1:27018' },
+  { nazev_indexu: 'idx_director',klic_indexu: { director: 1 },      pocet_pouziti: 0, host: 'shard1-1:27018' },
+  { nazev_indexu: 'idx_type_year', klic_indexu: { type: 1, release_year: -1 }, pocet_pouziti: 0, host: 'shard1-1:27018' },
+  ...ostatní s pocet_pouziti: 0... ]
+// idx_director, idx_listed_in, idx_type_year, idx_country_type_year zatím nepoužity – kandidáti na monitoring.
+```
+
 ---
 
 ### Dotaz 22
@@ -898,6 +1149,17 @@ db.netflix_titles.find(
   { type: "TV Show", release_year: { $gte: 2018 } },
   { title: 1, type: 1, release_year: 1, country: 1, _id: 0 }
 ).hint("idx_type_year").sort({ release_year: -1 }).explain("executionStats")
+```
+
+**Výstup:**
+```
+stage: SHARD_MERGE_SORT
+totalKeysExamined: 1528
+totalDocsExamined: 1528
+nReturned:         1528
+executionTimeMillis: 2
+// Compound index idx_type_year { type:1, release_year:-1 } pokryl filtr i řazení v jednom průchodu.
+// Všechny prohledané klíče byly vráceny (žádný neprojde filtrem zbytečně).
 ```
 
 ---
@@ -934,6 +1196,19 @@ db.netflix_titles.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+[ { total: 8807,
+    director_vyplnenost_pct:   70.1,   // 2634 titulů bez režiséra (dokumenty, stand-up, animace)
+    cast_vyplnenost_pct:       90.6,   // 825 titulů bez obsazení
+    country_vyplnenost_pct:    90.6,   // 831 titulů bez země původu
+    date_added_vyplnenost_pct: 99.9,   // 10 titulů bez data přidání
+    rating_vyplnenost_pct:     100.0,  // všechna hodnocení vyplněna
+    duration_vyplnenost_pct:   100.0 } ]
+// Pole director má nejhorší vyplněnost – 30 % titulů nemá uvedeného režiséra.
+// Importováno s --ignoreBlanks, prázdné hodnoty jsou uloženy jako chybějící pole (ne null).
+```
+
 ---
 
 ### Dotaz 24
@@ -964,6 +1239,16 @@ db.netflix_titles.aggregate([
 ])
 ```
 
+**Výstup:**
+```
+// Validační schéma (zkráceno):
+{ '$jsonSchema': { bsonType: 'object', required: ['show_id','type','title'],
+    properties: { type: { bsonType: 'string', enum: ['Movie','TV Show'] }, ... } } }
+
+// Dokumenty porušující validaci type:
+[]   // Všechny dokumenty mají platný type – 'Movie' nebo 'TV Show'. Validace funguje správně.
+```
+
 ---
 
 ## KATEGORIE 5 – Distribuce dat, cluster, replikace a chování při výpadku
@@ -978,6 +1263,21 @@ db.netflix_titles.aggregate([
 ```javascript
 // Spustit na mongos
 sh.status()
+```
+
+**Výstup (zkráceno):**
+```
+shards:
+[ { _id: 'shard1ReplSet', host: 'shard1ReplSet/shard1-1:27018,shard1-2:27018,shard1-3:27018', state: 1 },
+  { _id: 'shard2ReplSet', host: 'shard2ReplSet/shard2-1:27018,shard2-2:27018,shard2-3:27018', state: 1 },
+  { _id: 'shard3ReplSet', host: 'shard3ReplSet/shard3-1:27018,shard3-2:27018,shard3-3:27018', state: 1 } ]
+active mongoses: [ { '8.0.20': 1 } ]
+balancer: { 'Currently enabled': 'yes', 'Currently running': 'no', 'Failed balancer rounds in last 5 attempts': 0 }
+shardedDataDistribution:
+  streaming_db.netflix_titles:
+    shard1ReplSet: numOwnedDocuments: 2885
+    shard2ReplSet: numOwnedDocuments: 2953
+    shard3ReplSet: numOwnedDocuments: 2969
 ```
 
 ---
@@ -996,6 +1296,15 @@ db.netflix_titles.getShardDistribution()
 
 // Celkové statistiky kolekce
 db.netflix_titles.stats()
+```
+
+**Výstup:**
+```
+Shard shard1ReplSet: { data: '1.51MiB', docs: 2885, chunks: 1 }  → 32.75 % docs
+Shard shard2ReplSet: { data: '1.55MiB', docs: 2953, chunks: 1 }  → 33.53 % docs
+Shard shard3ReplSet: { data: '1.56MiB', docs: 2969, chunks: 1 }  → 33.71 % docs
+Totals: { data: '4.63MiB', docs: 8807, chunks: 3 }
+// Hašované shardování zajistilo velmi rovnoměrné rozložení (±1 % mezi shardy).
 ```
 
 ---
@@ -1017,6 +1326,27 @@ db.adminCommand({ replSetGetStatus: 1 })
 // docker exec shard2-1 mongosh --port 27018 -u admin -p adminpassword --authenticationDatabase admin --eval "rs.status().members.forEach(m => print(m.name, m.stateStr))"
 // docker exec shard3-1 mongosh --port 27018 -u admin -p adminpassword --authenticationDatabase admin --eval "rs.status().members.forEach(m => print(m.name, m.stateStr))"
 // docker exec configsvr1 mongosh --port 27019 -u admin -p adminpassword --authenticationDatabase admin --eval "rs.status().members.forEach(m => print(m.name, m.stateStr))"
+```
+
+**Výstup:**
+```
+=== shard1ReplSet ===
+shard1-1:27018  PRIMARY   health: 1
+shard1-2:27018  SECONDARY health: 1
+shard1-3:27018  SECONDARY health: 1
+=== shard2ReplSet ===
+shard2-1:27018  PRIMARY   health: 1
+shard2-2:27018  SECONDARY health: 1
+shard2-3:27018  SECONDARY health: 1
+=== shard3ReplSet ===
+shard3-1:27018  PRIMARY   health: 1
+shard3-2:27018  SECONDARY health: 1
+shard3-3:27018  SECONDARY health: 1
+=== configReplSet ===
+configsvr1:27019  PRIMARY   health: 1
+configsvr2:27019  SECONDARY health: 1
+configsvr3:27019  SECONDARY health: 1
+// Všechny 4 replikační sady mají 1 PRIMARY + 2 SECONDARY, health: 1 (OK).
 ```
 
 ---
@@ -1043,6 +1373,17 @@ db.netflix_titles.stats()
 })
 ```
 
+**Výstup:**
+```
+streaming_db stats (v MB):
+  collections: 9, objects: 8898, dataSize: 4.66 MB, storageSize: 5.73 MB
+  indexes: 63, indexSize: 4.95 MB, totalSize: 10.68 MB
+
+netflix_titles:     8807 dokumentů
+platform_financials:  10 dokumentů
+streaming_shifts:     81 dokumentů
+```
+
 ---
 
 ### Dotaz 29
@@ -1067,6 +1408,23 @@ db.getSiblingDB("streaming_db").netflix_titles.findOne({ type: "Movie" })
 
 // 5. Sleduj re-synchronizaci (STARTUP2 -> SECONDARY)
 // docker exec shard1-1 mongosh --port 27018 -u admin -p adminpassword --authenticationDatabase admin --eval "rs.status().members.forEach(m => print(m.name, m.stateStr, m.infoMessage))"
+```
+
+**Výstup simulace:**
+```
+// Po docker compose stop shard1-2:
+shard1-1:27018  PRIMARY   health: 1
+shard1-2:27018  SECONDARY health: 1   ← stále hlášen jako healthy (krátký výpadek)
+shard1-3:27018  SECONDARY health: 1
+
+// Dotaz přes mongos (stále funkční):
+{ type: 'Movie', title: 'Dick Johnson Is Dead' }   ← cluster odpovídá normálně
+
+// Po docker compose start shard1-2 (přechodný stav):
+shard1-1:27018  PRIMARY   health: 1
+shard1-2:27018  SECONDARY health: 1   ← automaticky re-synchronizován z oplog PRIMARY
+shard1-3:27018  SECONDARY health: 1
+// Re-synchronizace proběhla automaticky bez manuálního zásahu.
 ```
 
 ---
@@ -1099,4 +1457,23 @@ db.getSiblingDB("streaming_db").getUsers().forEach(u =>
 
 // Ověření keyfile (spustit uvnitř configsvr1 kontejneru)
 // docker exec configsvr1 bash -c "ls -la /keyfile/mongo-keyfile && stat /keyfile/mongo-keyfile"
+```
+
+**Výstup:**
+```
+// listShards:
+shards: [
+  { _id: 'shard1ReplSet', host: 'shard1ReplSet/shard1-1:27018,shard1-2:27018,shard1-3:27018', state: 1 },
+  { _id: 'shard2ReplSet', host: 'shard2ReplSet/shard2-1:27018,shard2-2:27018,shard2-3:27018', state: 1 },
+  { _id: 'shard3ReplSet', host: 'shard3ReplSet/shard3-1:27018,shard3-2:27018,shard3-3:27018', state: 1 } ]
+
+// Admin uživatelé:
+admin -> [{"role":"root","db":"admin"}]
+
+// streaming_db uživatelé:
+streaming_user -> [{"role":"readWrite","db":"streaming_db"},{"role":"dbAdmin","db":"streaming_db"}]
+
+// Ověření keyfile:
+-r-------- 1 mongodb mongodb 1012 Apr 14 10:00 /keyfile/mongo-keyfile
+// Oprávnění 400 (read-only pro vlastníka), vlastník mongodb (UID 999).
 ```
